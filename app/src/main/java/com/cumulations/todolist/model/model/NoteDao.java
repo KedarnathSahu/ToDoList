@@ -1,4 +1,4 @@
-package com.cumulations.todolist.model;
+package com.cumulations.todolist.model.model;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;

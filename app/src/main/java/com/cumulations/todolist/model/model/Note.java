@@ -1,4 +1,4 @@
-package com.cumulations.todolist.model;
+package com.cumulations.todolist.model.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
