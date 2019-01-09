@@ -1,4 +1,4 @@
-package com.cumulations.todolist.view;
+package com.cumulations.todolist.view.activity;
 
 import android.content.Intent;
 import android.support.design.widget.TextInputEditText;

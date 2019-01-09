@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MainActivity"
+        <activity android:name=".view.activity.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.AddNoteActivity"
-            android:parentActivityName=".view.MainActivity"
+        <activity android:name=".view.activity.AddNoteActivity"
+            android:parentActivityName=".view.activity.MainActivity"
             tools:targetApi="jelly_bean" />
     </application>
 
