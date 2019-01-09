@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import com.cumulations.todolist.R;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
 
-    public static final String EXTRA_TITLE="com.cumulations.todolist.view.EXTRA_TITLE";
-    public static final String EXTRA_DESCRIPTION="com.cumulations.todolist.view.EXTRA_DESCRIPTION";
-    public static final String EXTRA_PRIORITY="com.cumulations.todolist.view.EXTRA_PRIORITY";
+    public static final String EXTRA_ID = "com.cumulations.todolist.view.EXTRA_ID";
+    public static final String EXTRA_TITLE = "com.cumulations.todolist.view.EXTRA_TITLE";
+    public static final String EXTRA_DESCRIPTION = "com.cumulations.todolist.view.EXTRA_DESCRIPTION";
+    public static final String EXTRA_PRIORITY = "com.cumulations.todolist.view.EXTRA_PRIORITY";
 
     private TextInputEditText editTextTitle;
     private TextInputEditText editTextDescription;
@@ -35,7 +36,16 @@ public class AddNoteActivity extends AppCompatActivity {
         numberPickerPriority.setMaxValue(10);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Note");
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit Note");
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+        } else {
+            setTitle("Add Note");
+        }
     }
 
     @Override
@@ -61,16 +71,22 @@ public class AddNoteActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString();
         int priority = numberPickerPriority.getValue();
 
-        if((title.trim().isEmpty())||(description.trim().isEmpty())){
+        if ((title.trim().isEmpty()) || (description.trim().isEmpty())) {
             Toast.makeText(this, "Please insert title & description.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Intent data=new Intent();
-        data.putExtra(EXTRA_TITLE,title);
-        data.putExtra(EXTRA_DESCRIPTION,description);
-        data.putExtra(EXTRA_PRIORITY,priority);
-        setResult(RESULT_OK,data);
+        Intent data = new Intent();
+        data.putExtra(EXTRA_TITLE, title);
+        data.putExtra(EXTRA_DESCRIPTION, description);
+        data.putExtra(EXTRA_PRIORITY, priority);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            data.putExtra(EXTRA_ID, id);
+        }
+
+        setResult(RESULT_OK, data);
         finish();
     }
 }

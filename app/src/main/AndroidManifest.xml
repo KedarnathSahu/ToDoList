@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.AddNoteActivity"
+        <activity android:name=".view.activity.AddEditNoteActivity"
             android:parentActivityName=".view.activity.MainActivity"
             tools:targetApi="jelly_bean" />
     </application>
