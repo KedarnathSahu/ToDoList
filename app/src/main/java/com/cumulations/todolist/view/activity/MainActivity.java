@@ -52,14 +52,6 @@ public class MainActivity extends AppCompatActivity {
         final NoteAdapter adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
 
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
-            @Override
-            public void onChanged(@Nullable List<Note> notes) {
-                adapter.submitList(notes);
-            }
-        });
-
         //swipeable logic
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -73,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Note deleted.", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(@Nullable List<Note> notes) {
+                adapter.submitList(notes);
+            }
+        });
 
         //edit notes on item click
         adapter.setOnItemClickListner(new NoteAdapter.onItemClickListener() {
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Note note = new Note(title, description, priority);
                 noteViewModel.insert(note);
-
                 Toast.makeText(this, "Note Saved.", Toast.LENGTH_SHORT).show();
             } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
                 int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);

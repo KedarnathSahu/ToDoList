@@ -3,37 +3,42 @@ package com.cumulations.todolist.model.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.cumulations.todolist.model.model.Note;
 import com.cumulations.todolist.model.model.NoteDao;
 import com.cumulations.todolist.model.model.NoteDatabase;
+import com.cumulations.todolist.model.remoteDataSource.RemoteDb;
 
 import java.util.List;
 
 public class NoteRepository {
     private NoteDao noteDao;
+    private RemoteDb remoteDb;
     private LiveData<List<Note>> allNotes;
 
     public NoteRepository(Application application) {
         NoteDatabase database = NoteDatabase.getInstance(application);
         noteDao = database.noteDao();
+        remoteDb = new RemoteDb();
         allNotes = noteDao.getAllNotes();
+//        remoteDb.getAllNotes();
     }
 
     public void insert(Note note) {
-        new InsertNoteAsyncTask(noteDao).execute(note);
+        new InsertNoteAsyncTask(noteDao, remoteDb).execute(note);
     }
 
     public void update(Note note) {
-        new UpdateNoteAsyncTask(noteDao).execute(note);
+        new UpdateNoteAsyncTask(noteDao, remoteDb).execute(note);
     }
 
     public void delete(Note note) {
-        new DeleteNoteAsyncTask(noteDao).execute(note);
+        new DeleteNoteAsyncTask(noteDao, remoteDb).execute(note);
     }
 
     public void deleteAllNotes() {
-        new DeleteAllNotesAsyncTask(noteDao).execute();
+        new DeleteAllNotesAsyncTask(noteDao, remoteDb).execute();
     }
 
     public LiveData<List<Note>> getAllNotes() {
@@ -43,14 +48,18 @@ public class NoteRepository {
     private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void> {
 
         private NoteDao noteDao;
+        private RemoteDb remoteDb;
 
-        private InsertNoteAsyncTask(NoteDao noteDao) {
+        private InsertNoteAsyncTask(NoteDao noteDao, RemoteDb remoteDb) {
             this.noteDao = noteDao;
+            this.remoteDb = remoteDb;
         }
 
         @Override
         protected Void doInBackground(Note... notes) {
-            noteDao.insert(notes[0]);
+            long id = noteDao.insert(notes[0]);
+            notes[0].setId((int) id);
+            remoteDb.insert(notes[0]);
             return null;
         }
     }
@@ -58,14 +67,17 @@ public class NoteRepository {
     private static class UpdateNoteAsyncTask extends AsyncTask<Note, Void, Void> {
 
         private NoteDao noteDao;
+        private RemoteDb remoteDb;
 
-        private UpdateNoteAsyncTask(NoteDao noteDao) {
+        private UpdateNoteAsyncTask(NoteDao noteDao, RemoteDb remoteDb) {
             this.noteDao = noteDao;
+            this.remoteDb = remoteDb;
         }
 
         @Override
         protected Void doInBackground(Note... notes) {
             noteDao.update(notes[0]);
+            remoteDb.update(notes[0]);
             return null;
         }
     }
@@ -73,14 +85,17 @@ public class NoteRepository {
     private static class DeleteNoteAsyncTask extends AsyncTask<Note, Void, Void> {
 
         private NoteDao noteDao;
+        private RemoteDb remoteDb;
 
-        private DeleteNoteAsyncTask(NoteDao noteDao) {
+        private DeleteNoteAsyncTask(NoteDao noteDao, RemoteDb remoteDb) {
             this.noteDao = noteDao;
+            this.remoteDb = remoteDb;
         }
 
         @Override
         protected Void doInBackground(Note... notes) {
             noteDao.delete(notes[0]);
+            remoteDb.delete(notes[0]);
             return null;
         }
     }
@@ -88,14 +103,17 @@ public class NoteRepository {
     private static class DeleteAllNotesAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private NoteDao noteDao;
+        private RemoteDb remoteDb;
 
-        private DeleteAllNotesAsyncTask(NoteDao noteDao) {
+        private DeleteAllNotesAsyncTask(NoteDao noteDao, RemoteDb remoteDb) {
             this.noteDao = noteDao;
+            this.remoteDb = remoteDb;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             noteDao.deleteAllNotes();
+            remoteDb.deleteAllNotes();
             return null;
         }
     }

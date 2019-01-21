@@ -12,13 +12,7 @@ import android.widget.TextView;
 import com.cumulations.todolist.R;
 import com.cumulations.todolist.model.model.Note;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
-
-    private List<Note> notes = new ArrayList<>();
-
     private onItemClickListener listener;
 
     public NoteAdapter() {
@@ -57,7 +51,6 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         noteHolder.textViewDescription.setText(currentNote.getDescription());
         noteHolder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
     }
-
 
     class NoteHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
