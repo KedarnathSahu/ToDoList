@@ -3,7 +3,6 @@ package com.cumulations.todolist.model.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.cumulations.todolist.model.model.Note;
 import com.cumulations.todolist.model.model.NoteDao;
@@ -15,14 +14,15 @@ import java.util.List;
 public class NoteRepository {
     private NoteDao noteDao;
     private RemoteDb remoteDb;
-    private LiveData<List<Note>> allNotes;
+    private LiveData<List<Note>> localAllNotes;
+    private List<Note> remoteAllNotes;
 
     public NoteRepository(Application application) {
         NoteDatabase database = NoteDatabase.getInstance(application);
         noteDao = database.noteDao();
         remoteDb = new RemoteDb();
-        allNotes = noteDao.getAllNotes();
-//        remoteDb.getAllNotes();
+        remoteAllNotes=remoteDb.getAllNotes();
+        localAllNotes = noteDao.getAllNotes();
     }
 
     public void insert(Note note) {
@@ -41,8 +41,8 @@ public class NoteRepository {
         new DeleteAllNotesAsyncTask(noteDao, remoteDb).execute();
     }
 
-    public LiveData<List<Note>> getAllNotes() {
-        return allNotes;
+    public LiveData<List<Note>> getLocalAllNotes() {
+        return localAllNotes;
     }
 
     private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void> {

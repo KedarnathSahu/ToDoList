@@ -2,6 +2,7 @@ package com.cumulations.todolist.model.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.firebase.database.Exclude;
@@ -23,6 +24,11 @@ public class Note {
 
     @ColumnInfo(name = "priority")
     private int priority;
+
+    @Ignore
+    public Note() {
+        //empty constructor needed
+    }
 
     public Note(String title, String description, int priority) {
         this.title = title;
@@ -49,15 +55,4 @@ public class Note {
     public int getPriority() {
         return priority;
     }
-
-    @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("id", id);
-        result.put("title", title);
-        result.put("description", description);
-        result.put("priority", priority);
-        return result;
-    }
-
 }
