@@ -1,5 +1,7 @@
 package com.cumulations.todolist.model.remoteDataSource;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -19,6 +21,7 @@ public class RemoteDb {
     private DatabaseReference mDatabaseRef;
 
     private List<Note> mNote;
+    private LiveData<List<Note>> mNotes;
 
     public RemoteDb() {
         this.mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -57,8 +60,10 @@ public class RemoteDb {
         mDatabaseRef.setValue(null);
     }
 
-    public  List<Note> getAllNotes() {
+    public LiveData<List<Note>> getAllNotes() {
+        mNotes = new MutableLiveData<>();
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mNote.clear();
@@ -66,6 +71,7 @@ public class RemoteDb {
                     Note note = noteSnapshot.getValue(Note.class);
                     mNote.add(note);
                 }
+                ((MutableLiveData<List<Note>>) mNotes).setValue(mNote);
                 Log.e("@@@", "Reading data was successful.");
             }
 
@@ -74,6 +80,7 @@ public class RemoteDb {
                 Log.e("@@@", databaseError.getMessage());
             }
         });
-        return mNote;
+
+        return mNotes;
     }
 }

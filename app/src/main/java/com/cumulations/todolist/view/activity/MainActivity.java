@@ -67,10 +67,34 @@ public class MainActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+        noteViewModel.getAllLocalNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
                 adapter.submitList(notes);
+            }
+        });
+        noteViewModel.getAllRemoteNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(@Nullable List<Note> notes) {
+                if (notes != null) {
+                    if ((notes.size()) != (adapter.getItemCount())) {
+                        int size = ((notes.size() > adapter.getItemCount()) ? (notes.size()) : (adapter.getItemCount()));
+                        for (int i = 0; i < size; i++) {
+                            boolean foundFlag = false;
+                            for (Note note : notes) {
+                                for (int l = 0; l < adapter.getItemCount(); l++) {
+                                    if ((adapter.getItemId(l) == note.getId())) {
+                                        foundFlag = true;
+                                    }
+                                }
+                                if (!foundFlag) {
+                                    noteViewModel.insert(note);
+                                    foundFlag = true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
